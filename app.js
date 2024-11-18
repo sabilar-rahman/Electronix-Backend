@@ -12,6 +12,10 @@ const UserRoutes = require("./src/app/modules/user/user.route");
 
 app.use("/api/user", UserRoutes);
 
+
+
+
+
 app.get("/", (req, res) => {
     res.send("Route is working! YaY!");
 });

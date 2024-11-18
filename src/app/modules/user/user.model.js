@@ -1,6 +1,6 @@
 const { Schema, model } = require("mongoose");
 
-const bcrypt = require('bcrypt');
+const bcrypt = require("bcrypt");
 
 const userSchema = new Schema(
   {
@@ -25,6 +25,12 @@ userSchema.pre("save", async function (next) {
   user.password = hashedPassword;
   next();
 });
+
+// compare password while LOGIN
+
+userSchema.methods.comparePassword = function (candidatePassword) {
+  return bcrypt.compare(candidatePassword, this.password);
+};
 
 const User = model("User", userSchema);
 
