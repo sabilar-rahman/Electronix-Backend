@@ -1,16 +1,31 @@
-const {  Schema, model } = require("mongoose");
+const { Schema, model } = require("mongoose");
 
-const userSchema = new Schema({
-    name: {type: String, required: true ,unique: true},
-    email: {type: String, required: true ,unique: true},
-    password: {type: String, required: true},
-    profileImage: {type: String},
-    role: {type: String, default: "user"},
-    bio: {type: String ,maxLength: 300},
-    timestamp: {type: Date, default: Date.now} 
+const bcrypt = require('bcrypt');
 
-  });
+const userSchema = new Schema(
+  {
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    profileImage: { type: String },
+    role: { type: String, default: "user" },
+    bio: { type: String, maxLength: 300 },
+  },
+  {
+    timestamps: true,
+  }
+);
 
-  const User = model("User", userSchema);
+// hash password
+userSchema.pre("save", async function (next) {
+  const user = this;
+  if (!user.isModified("password")) return next();
 
-  module.exports = User;
+  const hashedPassword = await bcrypt.hash(user.password, 10);
+  user.password = hashedPassword;
+  next();
+});
+
+const User = model("User", userSchema);
+
+module.exports = User;

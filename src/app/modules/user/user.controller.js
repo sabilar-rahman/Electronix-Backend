@@ -1,6 +1,6 @@
 const User = require('./user.model')
 
-exports. userRegistration = async (req, res) => {
+const userRegistration = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
@@ -23,4 +23,7 @@ exports. userRegistration = async (req, res) => {
   }
 };
 
+module.exports = {
+  userRegistration,
+};
 
