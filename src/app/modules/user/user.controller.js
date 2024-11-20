@@ -1,7 +1,9 @@
+const {
+  successResponse,
+  errorResponse,
+} = require("../../../utils/responseHandler");
 const generateToken = require("../../middleware/generateToken");
 const User = require("./user.model");
-
-
 
 const userRegistration = async (req, res) => {
   try {
@@ -70,7 +72,35 @@ const userLogin = async (req, res) => {
   }
 };
 
+const userLogout = async (req, res) => {
+  try {
+    res.clearCookie("token");
+    // res.status(200).send({ message: "Logout successful" });
+    successResponse(res, 200, "Logout successful");
+  } catch (error) {
+    // console.error("Error during logout:", error);
+    // res.status(500).send({ message: "Logout failed", error });
+
+    errorResponse(res, 500, "Logout failed", error);
+  }
+};
+
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find({}, { password: 0}).sort({ createdAt: -1 });
+    // res.status(200).send({ message: "Users fetched successfully", users });
+    successResponse(res, 200, "Users fetched successfully", users );
+  } catch (error) {
+    // console.error("Error fetching users:", error);
+    // res.status(500).send({ message: "Failed to fetch users", error });
+
+    errorResponse(res, 500, "Failed to fetch users", error);
+  }
+};
+
 module.exports = {
   userRegistration,
   userLogin,
+  userLogout,
+  getAllUsers,
 };

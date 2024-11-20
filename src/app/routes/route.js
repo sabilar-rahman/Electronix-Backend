@@ -1,7 +1,10 @@
-// import express from "express";
-//  import { UserRoutes } from "../modules/user/user.route.js";
+// const express = require("express");
+
 // const router = express.Router();
 
+// // const UserRoutes = require("./src/app/modules/user/user.route");
+
+// const UserRoutes = require("../modules/user/user.route");
 
 // const moduleRoutes = [
 //     {
@@ -12,4 +15,3 @@
 // ];
 
 // moduleRoutes.forEach((route) => router.use(route.path, route.route));
-// export default router;
