@@ -130,11 +130,28 @@ const updateUserRole = async (req, res) => {
   }
 };
 
+
+const updateUserProfile = async (req, res) => {
+  try {
+    const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+    if (!updatedUser) {
+      return res.status(404).send({ message: "User not found" });
+    }
+    res.status(200).send({ message: "User profile updated successfully", updatedUser });
+  } catch (error) {
+    console.error("Error updating user profile:", error);
+    res.status(500).send({ message: "Failed to update user profile", error });
+  }
+}
+
 module.exports = {
   userRegistration,
   userLogin,
   userLogout,
   getAllUsers,
   deleteUser,
-  updateUserRole
+  updateUserRole,
+  updateUserProfile
 };

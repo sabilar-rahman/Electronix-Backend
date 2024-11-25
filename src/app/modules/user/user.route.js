@@ -23,8 +23,8 @@ router.delete("/auth/users/:id",verifyToken,verifyAdmin, userController.deleteUs
 
 router.patch("/auth/users/:id",verifyToken,verifyAdmin, userController.updateUserRole);
 
+// update user profile
 
-
-// export const UserRoutes = router;
+router.patch("/auth/edit-profile/:id",verifyToken, userController.updateUserProfile);
 
 module.exports=router
