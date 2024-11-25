@@ -15,6 +15,14 @@ const verifyAdmin = require('../../middleware/verifyAdmin');
 
 // router.post("/register", userRegistration);
 
+// delete user
+
+router.delete("/auth/users/:id",verifyToken,verifyAdmin, userController.deleteUser);
+
+// update user role
+
+router.patch("/auth/users/:id",verifyToken,verifyAdmin, userController.updateUserRole);
+
 
 
 // export const UserRoutes = router;
