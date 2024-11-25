@@ -17,9 +17,11 @@ app.use(
 // routes
 const UserRoutes = require("./src/app/modules/user/user.route");
 const ProductsRoutes = require("./src/app/modules/products/product.route");
+const ReviewsRoutes = require("./src/app/modules/reviews/review.route");
 
 app.use("/api", UserRoutes);
 app.use("/api/products", ProductsRoutes);
+app.use("/api/reviews", ReviewsRoutes);
 
 // app.use("/api",route)
 
