@@ -96,8 +96,29 @@ const getAllProducts = async (req, res) => {
 //     }
 // };
 
+const getSingleProducts = async (req, res) => {
+    try {
+        const product = await Products.findById(req.params.id).populate("author" , "name email");
+
+        if (!product) {
+            return res.status(404).send({ message: "Product not found" });
+        }
+
+        const reviews = await Reviews.find({ productId: product._id }).populate("userId", "name email");
+
+
+        res.status(200).send({ message: "Product fetched successfully", product, reviews });
+    } catch (error) {
+        console.error("Error fetching product:", error);
+        res.status(500).send({ message: "Failed to fetch product", error });
+    }
+};
+
+
+
 module.exports = {
     creteNewProduct,
     getAllProducts,
+    getSingleProducts
 
 };
