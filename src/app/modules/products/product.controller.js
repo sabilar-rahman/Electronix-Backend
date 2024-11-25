@@ -115,10 +115,43 @@ const getSingleProducts = async (req, res) => {
 };
 
 
+const updateProductById = async (req, res) => {
+    try {
+        const updatedProduct = await Products.findByIdAndUpdate(req.params.id, req.body, {
+            new: true,
+        });
+        if (!updatedProduct) {
+            return res.status(404).send({ message: "Product not found" });
+        }
+        res.status(200).send({ message: "Product updated successfully", updatedProduct });
+    } catch (error) {
+        console.error("Error updating product:", error);
+        res.status(500).send({ message: "Failed to update product", error });
+    }
+};
+
+
+const deleteProductById= async (req, res) => {
+    try {
+        const deletedProduct = await Products.findByIdAndDelete(req.params.id);
+        if (!deletedProduct) {
+            return res.status(404).send({ message: "Product not found" });
+        }
+        res.status(200).send({ message: "Product deleted successfully", deletedProduct });
+    } catch (error) {
+        console.error("Error deleting product:", error);
+        res.status(500).send({ message: "Failed to delete product", error });
+    }
+};
+
+
 
 module.exports = {
     creteNewProduct,
     getAllProducts,
-    getSingleProducts
+    getSingleProducts,
+
+    updateProductById,
+    deleteProductById
 
 };
