@@ -23,7 +23,7 @@ const postReview = async (req, res) => {
             await newReview.save();
         }
 
-        const review = await Reviews.find({ productId});
+        const review = await Reviews.find({ productId });
 
 
         if (review.length > 0) {
@@ -52,4 +52,40 @@ const postReview = async (req, res) => {
 };
 
 
-module.exports = { postReview };
+
+const getUserReviews = async (req, res) => {
+
+    const { userId } = req.params;
+    try {
+        if(!userId){
+            return res.status(400).send({ message: "Missing required fields" });
+        }
+        const reviews = await Reviews.find({ userId: userId }).sort({ createdAt: -1 });
+
+        if(reviews.length === 0){
+            return res.status(404).send({ message: "No reviews found" });
+        }
+        res.status(200).send({ message: "Reviews fetched successfully", reviews });
+    } catch (error) {
+        console.error("Error fetching reviews:", error);
+        res.status(500).send({ message: "Failed to fetch reviews", error });
+    }
+};
+
+
+const getTotalReviewsCount = async (req, res) => {
+    try {
+        const totalReviews = await Reviews.countDocuments({});
+        res.status(200).send({ message: "Total reviews Count successfully", totalReviews });
+    } catch (error) {
+        console.error("Error fetching total reviews:", error);
+        res.status(500).send({ message: "Failed to fetch total reviews", error });
+    }
+};
+
+
+module.exports = {
+    postReview,
+    getUserReviews,
+    getTotalReviewsCount
+};
