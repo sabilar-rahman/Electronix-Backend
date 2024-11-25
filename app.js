@@ -16,8 +16,10 @@ app.use(
 
 // routes
 const UserRoutes = require("./src/app/modules/user/user.route");
+const ProductsRoutes = require("./src/app/modules/products/product.route");
 
 app.use("/api", UserRoutes);
+app.use("/api/products", ProductsRoutes);
 
 // app.use("/api",route)
 
