@@ -9,7 +9,7 @@ const verifyAdmin = require("../../middleware/verifyAdmin");
 
 
 
-router.post("/post-review", ReviewController.postReview);
+router.post("/post-review", verifyToken,ReviewController.postReview);
 router.get("/total-reviews", ReviewController.getTotalReviewsCount); // this need to be first because of countDocuments({})
 
 router.get("/:userId", ReviewController.getUserReviews);

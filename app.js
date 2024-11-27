@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
+const cookieParser = require("cookie-parser");
 
 
 
@@ -14,14 +15,21 @@ app.use(
   })
 );
 
+app.use(cookieParser());
+
+
 // routes
 const UserRoutes = require("./src/app/modules/user/user.route");
 const ProductsRoutes = require("./src/app/modules/products/product.route");
 const ReviewsRoutes = require("./src/app/modules/reviews/review.route");
 
+const stateRoutes = require("./src/app/modules/stats/stats.route")
+
 app.use("/api", UserRoutes);
 app.use("/api/products", ProductsRoutes);
 app.use("/api/reviews", ReviewsRoutes);
+
+app.use('/api/stats',stateRoutes)
 
 // app.use("/api",route)
 
