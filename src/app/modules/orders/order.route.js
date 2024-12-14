@@ -1,5 +1,5 @@
 const express = require("express");
-const { makePaymentRequest, confirmPayment ,getOrderByEmail ,getOrderById,getAllOrders , updateOrderStatus} = require("./order.controller");
+const { makePaymentRequest, confirmPayment ,getOrderByEmail ,getOrderById,getAllOrders , updateOrderStatus,deleteOrderById} = require("./order.controller");
 const { updateOne } = require("./order.model");
 const router = express.Router();
 
@@ -23,6 +23,11 @@ router.get('/order/:id',getOrderById)
 
 //get all order
 router.get('/',getAllOrders)
+
+
+// delete order by id
+
+router.delete("/delete-order/:id",deleteOrderById);
 
 
 
