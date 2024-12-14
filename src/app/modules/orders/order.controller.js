@@ -34,53 +34,101 @@ const makePaymentRequest = async (req, res) => {
   res.json({ id: session.id });
 };
 
-
 const confirmPayment = async (req, res) => {
-
   const { session_id } = req.body;
 
   try {
-    
-  const session = await stripe.checkout.sessions.retrieve(session_id, {
-    expand: ["line_items", "payment_intent"],
-  });
-
-  const paymentIntentId = session.payment_intent.id;
-  let order = await Order.findOne({ orderId: paymentIntentId });
-
-  if (!order) {
-    const lineItems = session.line_items.data.map((item) => ({
-      productId: item.price.product,
-      quantity: item.quantity,
-    }));
-
-    const amount = session.amount_total / 100;
-    order = new Order({
-      orderId: paymentIntentId,
-      products: lineItems,
-      amount,
-      email: session.customer_details.email,
-      status: session.payment_intent.status === "succeeded" ? "pending" : "failed",
+    const session = await stripe.checkout.sessions.retrieve(session_id, {
+      expand: ["line_items", "payment_intent"],
     });
-  } else {
-    order.status =
-      session.payment_status === "succeeded" ? "pending" : "failed";
-  }
 
-  await order.save();
-  return res
-    .status(200)
-    .send({ message: "Order confirmed Successfully", order });
-   } catch (error) {
+    const paymentIntentId = session.payment_intent.id;
+    let order = await Order.findOne({ orderId: paymentIntentId });
+
+    if (!order) {
+      const lineItems = session.line_items.data.map((item) => ({
+        productId: item.price.product,
+        quantity: item.quantity,
+      }));
+
+      const amount = session.amount_total / 100;
+      order = new Order({
+        orderId: paymentIntentId,
+        products: lineItems,
+        amount,
+        email: session.customer_details.email,
+        status:
+          session.payment_intent.status === "succeeded" ? "pending" : "pending",
+      });
+    } else {
+      order.status =
+        session.payment_status === "succeeded" ? "pending" : "pending";
+    }
+
+    await order.save();
+    return res
+      .status(200)
+      .send({ message: "Order confirmed Successfully", order });
+  } catch (error) {
     console.error("Error confirming payment:", error);
     res.status(500).send({ message: "Failed to confirm payment", error });
   }
+};
+
+const getOrderByEmail = async (req, res) => {
+  const email = req.params.email;
+  if (!email) {
+    return res.status(400).send({ message: "Email is required" });
+  }
+  // const orders = await Order.find({ email: req.params.email });
+  try {
+    const orders = await Order.find({ email: email });
+
+    if (orders.length === 0 || !orders) {
+      return res.status(404).send({ orders: 0, message: "Orders not found" });
+    }
+
+    res.status(200).send({ message: "Orders fetched successfully", orders });
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    res.status(500).send({ message: "Failed to fetch orders", error });
+  }
+};
 
 
-  
+const getOrderById = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+    if (!order) {
+      return res.status(404).send({ message: "Order not found" });
+    }
+    res.status(200).send(order); //to get object
+  } catch (error) {
+    console.error("Error fetching order:", error);
+    res.status(500).send({ message: "Failed to fetch order", error });
+  }
+};
+
+
+const getAllOrders = async (req, res) => {
+  try {
+    const orders = await Order.find().sort({ createdAt: -1 });
+
+    if (orders.length === 0) {
+      return res.status(404).send({ orders: [], message: "Orders not found" });
+    }
+
+    res.status(200).send({ orders });
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    res.status(500).send({ message: "Failed to fetch orders", error });
+  }
 };
 
 module.exports = {
   makePaymentRequest,
   confirmPayment,
+  getOrderByEmail,
+  getOrderById,
+  getAllOrders
 };
