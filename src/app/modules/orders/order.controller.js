@@ -95,7 +95,6 @@ const getOrderByEmail = async (req, res) => {
   }
 };
 
-
 const getOrderById = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
@@ -108,7 +107,6 @@ const getOrderById = async (req, res) => {
     res.status(500).send({ message: "Failed to fetch order", error });
   }
 };
-
 
 const getAllOrders = async (req, res) => {
   try {
@@ -125,10 +123,35 @@ const getAllOrders = async (req, res) => {
   }
 };
 
+const updateOrderStatus = async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+
+  if (!status) {
+    return res.status(400).send({ message: "Status is required" });
+  }
+
+  try {
+    const updatedOrder = await Order.findByIdAndUpdate(
+      id,
+      { status, updatedAt: Date.now() },
+      { new: true , runValidators: true}
+    );
+    if (!updatedOrder) {
+      return res.status(404).send({ message: "Order not found" });
+    }
+    res.status(200).send({ message: "Order status updated successfully",updatedOrder });
+  } catch (error) {
+    console.error("Error updating order status:", error);
+    res.status(500).send({ message: "Failed to update order status", error });
+  }
+};
+
 module.exports = {
   makePaymentRequest,
   confirmPayment,
   getOrderByEmail,
   getOrderById,
-  getAllOrders
+  getAllOrders,
+  updateOrderStatus,
 };
