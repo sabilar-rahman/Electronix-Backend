@@ -1,11 +1,16 @@
 const express = require("express");
 const router = express.Router();
 
-const { userStats } = require("./stats.controller");
+const { userStats ,adminStats } = require("./stats.controller");
 
 // user stats
 
-router.get("/user-stats/:email", userStats)  
+router.get("/user-stats/:email", userStats)
+
+
+//admin stats 
+
+router.get("/admin-stats", adminStats)
 
 module.exports = router;
 
