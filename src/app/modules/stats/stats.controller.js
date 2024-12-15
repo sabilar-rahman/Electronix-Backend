@@ -1,4 +1,5 @@
 const Order = require("../orders/order.model");
+const Reviews = require("../reviews/review.model");
 const User = require("../user/user.model");
 
 const userStats = async (req, res) => {
@@ -27,6 +28,10 @@ const userStats = async (req, res) => {
 
 
         console.log(totalPaymentsAmount);
+
+
+        // get total reviews
+         const totalReviews = await Reviews.countDocuments({ userId: user._id });
 
        
 
